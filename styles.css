@@ -375,6 +375,24 @@ main {
     box-shadow: 0 0 20px var(--primary-green);
 }
 
+.wheel-segment[data-action="cancel"] .segment-content {
+    border-color: var(--danger-red);
+    background: rgba(255, 0, 64, 0.1);
+}
+
+.wheel-segment[data-action="cancel"].highlighted .segment-content {
+    border-color: var(--danger-red);
+    box-shadow: 0 0 20px var(--danger-red);
+}
+
+.wheel-segment[data-action="cancel"].active .segment-content {
+    background: var(--danger-red);
+    color: var(--dark-bg);
+    border-color: var(--danger-red);
+    box-shadow: 0 0 30px var(--danger-red);
+    transform: scale(1.2);
+}
+
 .segment-icon {
     font-size: 1.5rem;
     margin-bottom: 0.25rem;

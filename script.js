@@ -249,10 +249,6 @@ document.addEventListener('DOMContentLoaded', function() {
         wheelSegments.forEach(s => s.classList.remove('highlighted'));
         selectedSegment = null;
         
-        // Reset button text
-        centerButton.querySelector('.center-text').style.display = 'block';
-        centerButton.querySelector('.center-cancel-text').style.display = 'none';
-        
         if (cancelled) {
             playTacticalSound('beep');
             addActivityLog('Selection cancelled');
@@ -384,13 +380,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 3000);
                 break;
                 
-            case 'extract':
-                addActivityLog('Data extraction - PLACEHOLDER');
-                statusText.textContent = 'EXTRACTING...';
-                setTimeout(() => {
-                    addActivityLog('No target device connected');
-                    statusText.textContent = 'SYSTEM ACTIVE';
-                }, 2000);
+            case 'cancel':
+                addActivityLog('Operation cancelled');
+                // Don't change status, just close the selection
                 break;
                 
             case 'briefing':
@@ -423,10 +415,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 isSelecting = true;
                 centerButton.classList.add('active');
                 selectionWheel.classList.add('active');
-                
-                // Show cancel text instead of hold text
-                centerButton.querySelector('.center-text').style.display = 'none';
-                centerButton.querySelector('.center-cancel-text').style.display = 'block';
                 
                 playTacticalSound('select');
                 addActivityLog('Selection wheel activated');
@@ -475,10 +463,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (tapDuration < HOLD_DURATION && !selectionWheel.classList.contains('active')) {
             centerButton.classList.add('active');
             selectionWheel.classList.add('active');
-            
-            // Show cancel text instead of hold text
-            centerButton.querySelector('.center-text').style.display = 'none';
-            centerButton.querySelector('.center-cancel-text').style.display = 'block';
             
             playTacticalSound('select');
             addActivityLog('Selection wheel activated');
