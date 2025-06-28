@@ -541,6 +541,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     addActivityLog('Transmission declined');
     playTacticalSound('beep');
+    
+    // Show angry text message after 3 seconds
+    setTimeout(() => {
+        showTextNotification();
+    }, 3000);
     }
 
     function endCall() {
@@ -608,6 +613,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Part 2 ended');
                 audioStatus.textContent = 'Briefing complete - Awaiting orders';
                 currentAudio = null;
+                
+                // Automatically end the call after briefing is complete
+                setTimeout(() => {
+                    endCall();
+                }, 1000);
             };
             
             briefingPart2.onerror = function(e) {
