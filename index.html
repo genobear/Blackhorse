@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackhorse - Spy Operations</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Boot Sequence Overlay -->
+    <div id="bootSequence" class="boot-sequence">
+        <div class="boot-terminal">
+            <div class="boot-header">
+                <span class="boot-title">BLACKHORSE SECURE SYSTEM v2.7.1</span>
+                <span class="boot-time" id="bootTime"></span>
+            </div>
+            <div class="boot-content" id="bootContent">
+                <!-- Boot messages will be appended here -->
+            </div>
+            <div class="boot-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="scanner-overlay"></div>
+    
+    <header>
+        <div class="logo-container">
+            <div class="logo">BLACKHORSE</div>
+            <div class="tagline">CLASSIFIED OPERATIONS</div>
+        </div>
+        <div class="status-indicator">
+            <span class="status-dot"></span>
+            <span class="status-text">SYSTEM ACTIVE</span>
+        </div>
+    </header>
+
+    <main>
+        <div class="wheel-container">
+            <div class="center-button">
+                <span class="center-icon">🎯</span>
+                <span class="center-text">HOLD TO SELECT</span>
+            </div>
+            <div class="selection-wheel" id="selectionWheel">
+                <div class="wheel-segment" data-action="track" data-angle="0">
+                    <div class="segment-content">
+                        <span class="segment-icon">🎯</span>
+                        <span class="segment-text">TRACK TARGET</span>
+                    </div>
+                </div>
+                <div class="wheel-segment" data-action="scan" data-angle="45">
+                    <div class="segment-content">
+                        <span class="segment-icon">📡</span>
+                        <span class="segment-text">SCAN NETWORK</span>
+                    </div>
+                </div>
+                <div class="wheel-segment" data-action="intercept" data-angle="90">
+                    <div class="segment-content">
+                        <span class="segment-icon">📱</span>
+                        <span class="segment-text">INTERCEPT</span>
+                    </div>
+                </div>
+                <div class="wheel-segment" data-action="analyze" data-angle="135">
+                    <div class="segment-content">
+                        <span class="segment-icon">🔍</span>
+                        <span class="segment-text">ANALYZE</span>
+                    </div>
+                </div>
+                <div class="wheel-segment" data-action="encrypt" data-angle="180">
+                    <div class="segment-content">
+                        <span class="segment-icon">🔐</span>
+                        <span class="segment-text">ENCRYPT</span>
+                    </div>
+                </div>
+                <div class="wheel-segment" data-action="deploy" data-angle="225">
+                    <div class="segment-content">
+                        <span class="segment-icon">🚀</span>
+                        <span class="segment-text">DEPLOY</span>
+                    </div>
+                </div>
+                <div class="wheel-segment" data-action="extract" data-angle="270">
+                    <div class="segment-content">
+                        <span class="segment-icon">💾</span>
+                        <span class="segment-text">EXTRACT</span>
+                    </div>
+                </div>
+                <div class="wheel-segment" data-action="briefing" data-angle="315">
+                    <div class="segment-content">
+                        <span class="segment-icon">📋</span>
+                        <span class="segment-text">MISSION BRIEFING</span>
+                    </div>
+                </div>
+            </div>
+            <div class="selection-indicator"></div>
+        </div>
+
+        <div class="mobile-info-panel">
+            <div class="selected-tool-display">
+                <span class="selected-tool-label">SELECTED OPERATION:</span>
+                <span class="selected-tool-name" id="selectedTool">NONE</span>
+            </div>
+            <div class="mini-status">
+                <div class="mini-status-item">
+                    <span class="mini-label">UPLINK</span>
+                    <span class="mini-value">SECURED</span>
+                </div>
+                <div class="mini-status-item">
+                    <span class="mini-label">THREAT</span>
+                    <span class="mini-value threat-medium">MEDIUM</span>
+                </div>
+            </div>
+            <div class="activity-ticker">
+                <div class="ticker-content" id="activityTicker">
+                    <span class="ticker-item">System Active • Target Acquired: X7429 • Encryption: AES-256 • Location: Classified</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <span>ACCESS LEVEL: ALPHA</span>
+            <span>|</span>
+            <span>CLEARANCE: TOP SECRET</span>
+            <span>|</span>
+            <span>SESSION: ENCRYPTED</span>
+        </div>
+    </footer>
+
+    <!-- Map Modal -->
+    <div id="mapModal" class="map-modal">
+        <div class="map-container">
+            <div class="map-header">
+                <h2>TARGET LOCATION ACQUIRED</h2>
+                <button class="close-map" onclick="closeMap()">✕</button>
+            </div>
+            <div class="tracking-overlay" id="trackingOverlay">
+                <div class="tracking-scanner"></div>
+                <div class="tracking-text">INITIALIZING SATELLITE UPLINK...</div>
+                <div class="coordinate-display">
+                    <span>LAT: <span id="latDisplay">---.-----</span></span>
+                    <span>LON: <span id="lonDisplay">---.-----</span></span>
+                </div>
+            </div>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Network Scan Modal -->
+    <div id="scanModal" class="scan-modal">
+        <div class="scan-container">
+            <div class="scan-header">
+                <h2>NETWORK SCAN IN PROGRESS</h2>
+                <button class="close-scan" onclick="closeScanModal()">✕</button>
+            </div>
+            <div class="scan-content">
+                <div class="scan-line"></div>
+                <div class="scan-results" id="scanResults">
+                    <!-- Scan results will be injected here -->
+                </div>
+                <div class="scan-status-message" id="scanStatusMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incoming Call Modal -->
+    <div id="callModal" class="call-modal">
+        <div class="call-container">
+            <div class="call-header">
+                <div class="call-status">INCOMING SECURE TRANSMISSION</div>
+                <div class="call-encryption">🔒 AES-256 ENCRYPTED</div>
+            </div>
+            <div class="caller-info">
+                <div class="caller-avatar">
+                    <div class="avatar-ring"></div>
+                    <span class="avatar-icon">👤</span>
+                </div>
+                <div class="caller-details">
+                    <div class="caller-name">KAREN BOWMEN</div>
+                    <div class="caller-title">OPERATIONS DIRECTOR</div>
+                    <div class="caller-clearance">CLEARANCE: OMEGA</div>
+                </div>
+            </div>
+            <div class="call-controls">
+                <button class="answer-btn" onclick="answerCall()">
+                    <span class="btn-icon">📞</span>
+                    <span class="btn-text">ANSWER</span>
+                </button>
+                <button class="decline-btn" onclick="declineCall()">
+                    <span class="btn-icon">❌</span>
+                    <span class="btn-text">DECLINE</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call Active Modal -->
+    <div id="activeCallModal" class="call-modal">
+        <div class="active-call-container">
+            <div class="active-call-header">
+                <div class="call-status active">SECURE LINE ESTABLISHED</div>
+                <button class="end-call-btn" onclick="endCall()">END CALL</button>
+            </div>
+            <div class="active-caller-info">
+                <div class="active-caller-avatar">
+                    <span class="avatar-icon">👤</span>
+                </div>
+                <div class="active-caller-details">
+                    <div class="caller-name">KAREN BOWMEN</div>
+                    <div class="call-duration" id="callDuration">00:00</div>
+                </div>
+            </div>
+            <div class="audio-visualizer">
+                <div class="audio-bars">
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                </div>
+                <div class="audio-status" id="audioStatus">Ongoing call...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="scanSound">
+        <source src="sounds/444876__timbre__scan-bleep-variations.wav" type="audio/wav">
+    </audio>
+    <audio id="beepSound">
+        <source src="https://www.soundjay.com/buttons/button-3.wav" type="audio/wav">
+    </audio>
+    <audio id="lockSound">
+        <source src="sounds/787775__lyubomir_ikonomov__target-acquired.wav" type="audio/wav">
+    </audio>
+    <audio id="briefingPart1">
+        <source src="voice/BriefingPart1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="briefingPart2">
+        <source src="voice/BriefingPart2.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="ringTone" loop>
+        <source src="https://www.soundjay.com/phone/cell-phone-vibrate-1.wav" type="audio/wav">
+    </audio>
+    <audio id="textMessageSound">
+        <source src="sounds/iphone-text.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBj7fRTo_kOUoffefU-dD2OXyyZpcuithY&callback=initMap"></script>
+</body>
+</html>
