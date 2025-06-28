@@ -1,3 +1,6 @@
+// Global variables for tracking sounds
+let trackingTimeout = null;
+
 // Boot Sequence Logic
 function initBootSequence() {
     const bootSequence = document.getElementById('bootSequence');
@@ -285,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 trackingOverlay.style.display = 'block'; // Ensure tracking overlay is visible
 
                 // After a delay for scanning animation/sound
-                setTimeout(() => {
+                trackingTimeout = setTimeout(() => {
                     scanAudio.pause(); // Pause scan sound
                     scanAudio.currentTime = 0; // Reset scan sound
 
@@ -893,6 +896,14 @@ document.addEventListener('DOMContentLoaded', function() {
         statusText.textContent = 'SYSTEM ACTIVE';
         statusDot.style.background = '#00ff41'; // Green for active
         addActivityLog('Network scan concluded');
+        
+        // Reset scan status message
+        const scanStatusMessage = document.getElementById('scanStatusMessage');
+        if (scanStatusMessage) {
+            scanStatusMessage.textContent = 'Scanning for devices...';
+            scanStatusMessage.style.color = '';
+            scanStatusMessage.style.textShadow = '';
+        }
     }
 });
 
@@ -902,6 +913,32 @@ window.closeMap = function() {
     const statusDot = document.querySelector('.status-dot');
     statusText.textContent = 'SYSTEM ACTIVE';
     statusDot.style.background = '#00ff41';
+    
+    // Stop any playing sounds
+    const scanAudio = document.getElementById('scanSound');
+    const lockAudio = document.getElementById('lockSound');
+    
+    if (scanAudio) {
+        scanAudio.pause();
+        scanAudio.currentTime = 0;
+    }
+    
+    if (lockAudio) {
+        lockAudio.pause();
+        lockAudio.currentTime = 0;
+    }
+    
+    // Clear tracking timeout if it exists
+    if (trackingTimeout) {
+        clearTimeout(trackingTimeout);
+        trackingTimeout = null;
+    }
+    
+    // Reset tracking overlay
+    const trackingOverlay = document.getElementById('trackingOverlay');
+    if (trackingOverlay) {
+        trackingOverlay.style.display = 'block'; // Reset for next time
+    }
 };
 
 function initMap() {
