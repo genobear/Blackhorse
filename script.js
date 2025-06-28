@@ -438,8 +438,37 @@ document.addEventListener('DOMContentLoaded', function() {
     function endSelection(e) {
         e.preventDefault();
         
-        if (isSelecting && selectedSegment) {
-            selectSegment(selectedSegment);
+        // If the wheel was opened by a quick tap, keep it open
+        const tapDuration = Date.now() - touchStartTime;
+        if (tapDuration < HOLD_DURATION && !isSelecting && selectionWheel.classList.contains('active')) {
+            // Wheel was already open from a tap, so just close it
+            centerButton.classList.remove('active');
+            selectionWheel.classList.remove('active');
+            wheelSegments.forEach(s => s.classList.remove('highlighted'));
+            selectedSegment = null;
+            touchStartTime = 0;
+            return;
+        }
+        
+        // If it was a quick tap and wheel is not open, open it
+        if (tapDuration < HOLD_DURATION && !selectionWheel.classList.contains('active')) {
+            centerButton.classList.add('active');
+            selectionWheel.classList.add('active');
+            playTacticalSound('select');
+            addActivityLog('Selection wheel activated');
+            return;
+        }
+        
+        // For hold-and-release mode
+        if (isSelecting) {
+            if (selectedSegment) {
+                // User dragged to a segment and released
+                selectSegment(selectedSegment);
+            } else {
+                // User held but didn't select any segment (released on center or outside)
+                playTacticalSound('beep');
+                addActivityLog('Selection cancelled');
+            }
         }
         
         isSelecting = false;
@@ -453,6 +482,20 @@ document.addEventListener('DOMContentLoaded', function() {
     centerButton.addEventListener('mousedown', startSelection);
     centerButton.addEventListener('touchstart', startSelection);
     
+    // Add click handler to center button to close wheel when open
+    centerButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        // If wheel is active and we're not in selection mode, close it
+        if (selectionWheel.classList.contains('active') && !isSelecting) {
+            centerButton.classList.remove('active');
+            selectionWheel.classList.remove('active');
+            wheelSegments.forEach(s => s.classList.remove('highlighted'));
+            selectedSegment = null;
+            playTacticalSound('beep');
+            addActivityLog('Selection cancelled');
+        }
+    });
+    
     document.addEventListener('mousemove', updateSelection);
     document.addEventListener('touchmove', updateSelection);
     
@@ -464,10 +507,40 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             selectSegment(this);
         });
+        
+        // Add touch support for wheel segments
+        segment.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Highlight on touch
+            highlightSegment(this);
+        });
+        
+        segment.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Select on touch release
+            selectSegment(this);
+        });
     });
     
     addActivityLog('System initialization complete');
     addActivityLog('All operations standing by');
+    
+    // Add click handler to close wheel when clicking outside
+    document.addEventListener('click', function(e) {
+        // If wheel is open and click is outside wheel container
+        if (selectionWheel.classList.contains('active') && !e.target.closest('.wheel-container')) {
+            centerButton.classList.remove('active');
+            selectionWheel.classList.remove('active');
+            wheelSegments.forEach(s => s.classList.remove('highlighted'));
+            selectedSegment = null;
+            playTacticalSound('beep');
+            addActivityLog('Selection cancelled');
+        }
+    });
 
     // Call-related variables
     let callTimer = null;

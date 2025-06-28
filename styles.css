@@ -323,6 +323,7 @@ main {
 .selection-wheel.active {
     opacity: 1;
     transform: scale(1);
+    pointer-events: auto;
 }
 
 .wheel-segment {
@@ -333,6 +334,8 @@ main {
     left: 50%;
     transform-origin: center;
     transition: all 0.2s ease;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .wheel-segment[data-angle="0"] { transform: translate(-50%, -50%) rotate(0deg) translateY(-120px) rotate(0deg); }
