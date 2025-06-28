@@ -717,6 +717,54 @@ document.addEventListener('DOMContentLoaded', function() {
     window.declineCall = declineCall;
     window.endCall = endCall;
     window.closeScanModal = closeScanModal;
+    
+    // Add touch support for modal buttons
+    function addTouchSupport() {
+        // Answer/Decline call buttons
+        const answerBtn = document.querySelector('.answer-btn');
+        const declineBtn = document.querySelector('.decline-btn');
+        const endCallBtn = document.querySelector('.end-call-btn');
+        const closeMapBtn = document.querySelector('.close-map');
+        const closeScanBtn = document.querySelector('.close-scan');
+        
+        // Helper function to handle both click and touch
+        function addTouchHandler(element, handler) {
+            if (!element) return;
+            
+            // Remove onclick attribute to prevent conflicts
+            element.removeAttribute('onclick');
+            
+            // Add event listeners for both click and touch
+            element.addEventListener('click', handler);
+            element.addEventListener('touchend', function(e) {
+                e.preventDefault(); // Prevent default touch behavior
+                handler();
+            });
+        }
+        
+        // Add handlers to all buttons
+        addTouchHandler(answerBtn, answerCall);
+        addTouchHandler(declineBtn, declineCall);
+        addTouchHandler(endCallBtn, endCall);
+        addTouchHandler(closeMapBtn, window.closeMap);
+        addTouchHandler(closeScanBtn, closeScanModal);
+    }
+    
+    // Call when modals are shown
+    const originalAnswerCall = answerCall;
+    answerCall = function() {
+        originalAnswerCall();
+        setTimeout(addTouchSupport, 100); // Add touch support after modal is shown
+    };
+    
+    // Add touch support when call modal is shown
+    const originalExecuteAction = executeAction;
+    executeAction = function(action) {
+        originalExecuteAction(action);
+        if (action === 'briefing' || action === 'track' || action === 'scan') {
+            setTimeout(addTouchSupport, 1500); // Add touch support after modal appears
+        }
+    };
 
     // Network Scan Functionality
     const deviceNames = [

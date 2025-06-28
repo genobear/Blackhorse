@@ -25,6 +25,12 @@ body {
     -webkit-user-select: none;
 }
 
+/* Touch-friendly button defaults */
+button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
 .scanner-overlay {
     position: fixed;
     top: 0;
@@ -554,6 +560,13 @@ footer {
     cursor: pointer;
     font-family: inherit;
     transition: all 0.3s ease;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .close-map:hover {
@@ -740,6 +753,13 @@ footer {
     cursor: pointer;
     font-family: inherit;
     transition: all 0.3s ease;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .close-scan:hover {
@@ -960,6 +980,11 @@ footer {
     cursor: pointer;
     transition: all 0.3s ease;
     min-width: 80px;
+    min-height: 80px;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .answer-btn {
@@ -1025,6 +1050,12 @@ footer {
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    min-width: 100px;
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .end-call-btn:hover {
