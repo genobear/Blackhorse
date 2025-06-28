@@ -242,6 +242,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    function closeWheel(cancelled = false) {
+        isSelecting = false;
+        centerButton.classList.remove('active');
+        selectionWheel.classList.remove('active');
+        wheelSegments.forEach(s => s.classList.remove('highlighted'));
+        selectedSegment = null;
+        
+        // Reset button text
+        centerButton.querySelector('.center-text').style.display = 'block';
+        centerButton.querySelector('.center-cancel-text').style.display = 'none';
+        
+        if (cancelled) {
+            playTacticalSound('beep');
+            addActivityLog('Selection cancelled');
+        }
+    }
+    
     function selectSegment(segment) {
         if (!segment) return;
         
@@ -255,6 +272,9 @@ document.addEventListener('DOMContentLoaded', function() {
         playTacticalSound('activate');
         
         addActivityLog(`Operation selected: ${text}`);
+        
+        // Close the wheel
+        closeWheel(false);
         
         setTimeout(() => {
             executeAction(action);
@@ -403,6 +423,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 isSelecting = true;
                 centerButton.classList.add('active');
                 selectionWheel.classList.add('active');
+                
+                // Show cancel text instead of hold text
+                centerButton.querySelector('.center-text').style.display = 'none';
+                centerButton.querySelector('.center-cancel-text').style.display = 'block';
+                
                 playTacticalSound('select');
                 addActivityLog('Selection wheel activated');
             }
@@ -441,11 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // If the wheel was opened by a quick tap, keep it open
         const tapDuration = Date.now() - touchStartTime;
         if (tapDuration < HOLD_DURATION && !isSelecting && selectionWheel.classList.contains('active')) {
-            // Wheel was already open from a tap, so just close it
-            centerButton.classList.remove('active');
-            selectionWheel.classList.remove('active');
-            wheelSegments.forEach(s => s.classList.remove('highlighted'));
-            selectedSegment = null;
+            // Wheel was already open from a tap, don't close it yet
             touchStartTime = 0;
             return;
         }
@@ -454,6 +475,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (tapDuration < HOLD_DURATION && !selectionWheel.classList.contains('active')) {
             centerButton.classList.add('active');
             selectionWheel.classList.add('active');
+            
+            // Show cancel text instead of hold text
+            centerButton.querySelector('.center-text').style.display = 'none';
+            centerButton.querySelector('.center-cancel-text').style.display = 'block';
+            
             playTacticalSound('select');
             addActivityLog('Selection wheel activated');
             return;
@@ -466,16 +492,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectSegment(selectedSegment);
             } else {
                 // User held but didn't select any segment (released on center or outside)
-                playTacticalSound('beep');
-                addActivityLog('Selection cancelled');
+                closeWheel(true);
             }
         }
         
-        isSelecting = false;
-        centerButton.classList.remove('active');
-        selectionWheel.classList.remove('active');
-        wheelSegments.forEach(s => s.classList.remove('highlighted'));
-        selectedSegment = null;
         touchStartTime = 0;
     }
     
@@ -487,12 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.stopPropagation();
         // If wheel is active and we're not in selection mode, close it
         if (selectionWheel.classList.contains('active') && !isSelecting) {
-            centerButton.classList.remove('active');
-            selectionWheel.classList.remove('active');
-            wheelSegments.forEach(s => s.classList.remove('highlighted'));
-            selectedSegment = null;
-            playTacticalSound('beep');
-            addActivityLog('Selection cancelled');
+            closeWheel(true);
         }
     });
     
@@ -533,12 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         // If wheel is open and click is outside wheel container
         if (selectionWheel.classList.contains('active') && !e.target.closest('.wheel-container')) {
-            centerButton.classList.remove('active');
-            selectionWheel.classList.remove('active');
-            wheelSegments.forEach(s => s.classList.remove('highlighted'));
-            selectedSegment = null;
-            playTacticalSound('beep');
-            addActivityLog('Selection cancelled');
+            closeWheel(true);
         }
     });
 
