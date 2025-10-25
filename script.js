@@ -651,77 +651,51 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function playBriefingAudio() {
-    const briefingPart1 = document.getElementById('briefingPart1');
-    const briefingPart2 = document.getElementById('briefingPart2');
-    const audioStatus = document.getElementById('audioStatus');
+        const briefingAudio = document.getElementById('briefing-v2');
+        const audioStatus = document.getElementById('audioStatus');
     
-    console.log('Starting briefing audio playback...');
-    console.log('BriefingPart1 element:', briefingPart1);
-    console.log('BriefingPart2 element:', briefingPart2);
-    console.log('Audio status element:', audioStatus);
+        console.log('Starting briefing audio playback...');
+        console.log('Briefing audio element:', briefingAudio);
+        console.log('Audio status element:', audioStatus);
     
-    if (!briefingPart1) {
-        console.log('BriefingPart1 element not found');
-        audioStatus.textContent = 'Audio elements not found';
-        return;
-    }
+        if (!briefingAudio) {
+            console.log('Briefing audio element not found');
+            audioStatus.textContent = 'Briefing audio element not found';
+            return;
+        }
     
-    currentAudio = briefingPart1;
-    audioStatus.textContent = 'Playing briefing part 1...';
+        currentAudio = briefingAudio;
+        audioStatus.textContent = 'Playing mission briefing...';
     
-    // Set up event handlers first
-    briefingPart1.onended = function() {
-        console.log('Part 1 ended, starting part 2');
-        if (briefingPart2) {
-            currentAudio = briefingPart2;
-            audioStatus.textContent = 'Playing briefing part 2...';
-            
-            briefingPart2.onended = function() {
-                console.log('Part 2 ended');
-                audioStatus.textContent = 'Briefing complete - Awaiting orders';
-                currentAudio = null;
-                
-                // Automatically end the call after briefing is complete
-                setTimeout(() => {
-                    endCall();
-                }, 1000);
-            };
-            
-            briefingPart2.onerror = function(e) {
-                console.log('Part 2 error:', e);
-                audioStatus.textContent = 'Part 2 audio file error';
-            };
-            
-            // Try to play part 2
-            briefingPart2.play().then(() => {
-                console.log('Part 2 playing successfully');
+        briefingAudio.onended = function() {
+            console.log('Briefing ended');
+            audioStatus.textContent = 'Briefing complete - Awaiting orders';
+            currentAudio = null;
+    
+            setTimeout(() => {
+                endCall();
+            }, 1000);
+        };
+    
+        briefingAudio.onerror = function(e) {
+            console.log('Briefing audio error:', e);
+            audioStatus.textContent = 'Briefing audio file error';
+        };
+    
+        briefingAudio.currentTime = 0;
+        briefingAudio.volume = 0.8;
+    
+        console.log('Attempting to play briefing audio...');
+        const playPromise = briefingAudio.play();
+    
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log('Briefing audio playing successfully');
             }).catch(e => {
-                console.log('Part 2 playback failed:', e);
-                audioStatus.textContent = 'Part 2 playback failed';
+                console.log('Briefing audio playback failed:', e);
+                audioStatus.textContent = 'Briefing audio playback failed';
             });
         }
-    };
-    
-    briefingPart1.onerror = function(e) {
-        console.log('Part 1 error:', e);
-        audioStatus.textContent = 'Part 1 audio file error';
-    };
-    
-    // Reset and try to play part 1
-    briefingPart1.currentTime = 0;
-    briefingPart1.volume = 0.8;
-    
-    console.log('Attempting to play Part 1...');
-    const playPromise = briefingPart1.play();
-    
-    if (playPromise !== undefined) {
-        playPromise.then(() => {
-            console.log('Part 1 playing successfully');
-        }).catch(e => {
-            console.log('Part 1 playback failed:', e);
-            audioStatus.textContent = 'Briefing audio failed to play - check browser permissions';
-        });
-    }
     }
 
     function startAutoDismissTimer() {
